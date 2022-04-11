@@ -1,3 +1,4 @@
+from cgitb import html
 from email import message
 import smtplib
 import ssl
@@ -17,9 +18,23 @@ message = EmailMessage() # Instantiate an EmailMessage object and store in a var
 message["From"] = sender_email
 message["To"] = receiver_email
 message["Subject"] = subject
-message.set_content(body)
+#message.set_content(body)
 
-context = ssl.create_default_context() # Create a secure SSL context . This is needed for gmail to work/accept the email
+#* Creating a multi-line f string that will be used to set up the html format within the email
+html = f"""
+<html>
+    <body>
+        <h1>{subject}</h1>
+        <p>{body}</p>
+    </body>
+</html>
+"""
+
+#* Formats the message object to the html format we defined above in the var 'html'
+message.add_alternative(html, subtype="html")
+
+#* Create a secure SSL context . This is needed for gmail to work/accept the email
+context = ssl.create_default_context() 
 
 print("Sending email!")
 
